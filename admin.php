@@ -18,7 +18,7 @@ while ($row = mysqli_fetch_assoc($result)) {
     echo $row['username'];
 
     echo " <a href='approve.php?id=".$row['id']."'>Approve</a>";
-    echo " <a href='disprove.php?id=".$row['id']."'>Disprove</a>";
+    echo " <a href='reject.php?id=".$row['id']."'>Disprove</a>";
 
     echo "<br>";
 }
