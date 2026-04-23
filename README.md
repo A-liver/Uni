@@ -11,8 +11,8 @@ This project is a web-based system that manages student accounts, roles, and app
 
 ## Installation
 1. Download files
-2. Import the database name user in the test in phpMyAdmin
-3. Configure db.php
+2. Import the database schoold_db and edata in phpMyAdmin
+3. Configure db_connection.php
 4. Run on localhost (XAMPP)
 
 ## Usage
@@ -22,7 +22,7 @@ This project is a web-based system that manages student accounts, roles, and app
 
 ## Admin Account
 - Username: admin
-- Password: admin1
+- Password: admin123
 
 ## Technologies Used
 - PHP
