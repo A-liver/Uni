@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 27, 2026 at 08:50 AM
+-- Generation Time: Apr 28, 2026 at 01:04 PM
 -- Server version: 10.4.32-MariaDB
--- PHP Version: 8.2.12
+-- PHP Version: 8.0.30
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -63,6 +63,29 @@ INSERT INTO `applications` (`app_id`, `sy`, `sem`, `course`, `major`, `fname`, `
 (3, '2025-2026', '3', 'AB', 'Economics', 'Darcy', 'Lich', 'Graves', '2003-10-31', 22, 'female', 'Assembly of God', '    Zamboangueño', '09052206769', 'LichGraves0@gmail.com', 'Philippines', 'REGIONXII', 'Alabel', 'Alegria', 'William L. Graves', '09773110999', 'Nowhere', 'uploads/1776917956_190px-Graves_card.png', 'approved', '2026-04-23 04:19:16'),
 (4, '2025-2026', '3', 'BSIT', '', 'Apollo', 'Savant', 'Ixianus', '2004-10-18', 21, 'male', 'Protestants', '    Ati', '09052208739', 'Ixian1@gmail.com', 'Philippines', 'REGIONXII', 'Glan', 'Batulaki', 'Maximus S. Ixianus', '09773110666', 'North Ixia', 'uploads/1776920161_190px-Apollo_card.png', 'approved', '2026-04-23 04:56:01'),
 (6, '2025-2026', '3', 'BSIT', '', 'Apollo', 'Savant', 'Ixianus', '2004-10-18', 21, 'male', 'Protestants', '    Ati', '09052208739', 'Ixian1@gmail.com', 'Philippines', 'REGIONXII', 'Glan', 'Batulaki', 'Maximus S. Ixianus', '09773110666', 'North Ixia', 'uploads/1776920280_190px-Apollo_card.png', 'rejected', '2026-04-23 04:58:00');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `billing_master`
+--
+
+CREATE TABLE `billing_master` (
+  `id` int(11) NOT NULL,
+  `school_year` varchar(20) DEFAULT NULL,
+  `semester` varchar(10) DEFAULT NULL,
+  `fee_type` varchar(100) DEFAULT NULL,
+  `amount` decimal(10,2) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `billing_master`
+--
+
+INSERT INTO `billing_master` (`id`, `school_year`, `semester`, `fee_type`, `amount`) VALUES
+(1, '2025-2026', '1st', 'Tuition Fee', 15000.00),
+(2, '2025-2026', '1st', 'Library Fee', 500.00),
+(3, '2025-2026', '1st', 'Miscellaneous', 2000.00);
 
 -- --------------------------------------------------------
 
@@ -179,6 +202,28 @@ INSERT INTO `courses` (`id`, `COURSE`, `DESC`, `MAJOR`, `SY`, `SEM`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `payments`
+--
+
+CREATE TABLE `payments` (
+  `id` int(11) NOT NULL,
+  `student_id` int(11) DEFAULT NULL,
+  `school_year` varchar(20) DEFAULT NULL,
+  `semester` varchar(10) DEFAULT NULL,
+  `amount` decimal(10,2) DEFAULT NULL,
+  `payment_date` datetime DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `payments`
+--
+
+INSERT INTO `payments` (`id`, `student_id`, `school_year`, `semester`, `amount`, `payment_date`) VALUES
+(1, 5, '2025-2026', '1st', 100000.00, '2026-04-28 18:59:32');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `students`
 --
 
@@ -227,16 +272,21 @@ CREATE TABLE `student_subjects` (
   `instructor` varchar(100) DEFAULT NULL,
   `term` varchar(20) DEFAULT NULL,
   `sem` varchar(20) DEFAULT NULL,
-  `sy` varchar(20) DEFAULT NULL
+  `sy` varchar(20) DEFAULT NULL,
+  `g1` decimal(5,2) DEFAULT 0.00,
+  `g2` decimal(5,2) DEFAULT 0.00,
+  `g3` decimal(5,2) DEFAULT 0.00,
+  `final` decimal(5,2) DEFAULT 0.00,
+  `remarks` varchar(100) DEFAULT 'No Remarks'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `student_subjects`
 --
 
-INSERT INTO `student_subjects` (`id`, `student_id`, `cn`, `course`, `subject_code`, `description`, `units`, `room`, `instructor`, `term`, `sem`, `sy`) VALUES
-(2, 4, '6027', 'ITE', 'ACCTG101', 'Fundamentals of Accounting, Business and Management', 3, 'FG205', 'UNASSIGNED', '1', '1', '2018-2019'),
-(3, 5, '38', ' CLA', 'ENGL24', 'European Literature', 3, 'AG212', 'UNASSIGNED', '1', '1', '2018-2019');
+INSERT INTO `student_subjects` (`id`, `student_id`, `cn`, `course`, `subject_code`, `description`, `units`, `room`, `instructor`, `term`, `sem`, `sy`, `g1`, `g2`, `g3`, `final`, `remarks`) VALUES
+(2, 4, '6027', 'ITE', 'ACCTG101', 'Fundamentals of Accounting, Business and Management', 3, 'FG205', 'UNASSIGNED', '1', '1', '2018-2019', 0.00, 0.00, 0.00, 0.00, 'No Remarks'),
+(3, 5, '38', ' CLA', 'ENGL24', 'European Literature', 3, 'AG212', 'UNASSIGNED', '1', '1', '2018-2019', 0.00, 0.00, 0.00, 0.00, 'No Remarks');
 
 -- --------------------------------------------------------
 
@@ -1523,9 +1573,21 @@ ALTER TABLE `applications`
   ADD PRIMARY KEY (`app_id`);
 
 --
+-- Indexes for table `billing_master`
+--
+ALTER TABLE `billing_master`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `courses`
 --
 ALTER TABLE `courses`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `payments`
+--
+ALTER TABLE `payments`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -1561,10 +1623,22 @@ ALTER TABLE `applications`
   MODIFY `app_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
+-- AUTO_INCREMENT for table `billing_master`
+--
+ALTER TABLE `billing_master`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
 -- AUTO_INCREMENT for table `courses`
 --
 ALTER TABLE `courses`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=92;
+
+--
+-- AUTO_INCREMENT for table `payments`
+--
+ALTER TABLE `payments`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `students`
@@ -1610,10 +1684,3 @@ COMMIT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-
-ALTER TABLE student_subjects 
-ADD COLUMN g1 DECIMAL(5,2) DEFAULT 0.00,
-ADD COLUMN g2 DECIMAL(5,2) DEFAULT 0.00,
-ADD COLUMN g3 DECIMAL(5,2) DEFAULT 0.00,
-ADD COLUMN final DECIMAL(5,2) DEFAULT 0.00,
-ADD COLUMN remarks VARCHAR(100) DEFAULT 'No Remarks';
