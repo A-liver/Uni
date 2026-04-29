@@ -127,7 +127,7 @@ if (isset($_POST['search'])) {
         while ($student = mysqli_fetch_assoc($result)) {
             $student_id = $student['student_id'];
 
-            echo "<div class='dashboard'>";
+            echo "<div>";
             echo "<h2>Student Dashboard</h2>";
 
             $fullname = htmlspecialchars($student['fname']) . " " .
@@ -146,10 +146,34 @@ if (isset($_POST['search'])) {
             echo "<h3>Billing Records</h3>";
             $total_billing = 0;
             if ($billing_result && mysqli_num_rows($billing_result) > 0) {
-                echo "<table><tr><th>Fee Type</th><th>Amount</th></tr>";
+                echo "<table border='1'><tr><th>Fee Type</th><th>Amount</th></tr>";
                 while ($bill = mysqli_fetch_assoc($billing_result)) {
-                    $total_billing += $bill['amount'];
-                    echo "<tr><td>" . htmlspecialchars($bill['fee_type']) . "</td><td>" . number_format($bill['amount'], 2) . "</td></tr>";
+                    if (strpos($bill['fee_type'], 'Tuition') !== false) {
+						
+    // 🔎 Get total units for this student
+					$sql_units = "SELECT SUM(units) AS total_units 
+						FROM student_subjects 
+						WHERE student_id='$student_id'";
+
+				$res_units = mysqli_query($conn, $sql_units);
+				$row_units = mysqli_fetch_assoc($res_units);
+				$total_units = $row_units['total_units'] ?? 0;
+
+	/* 🔎 Debug output */
+			echo "<p>Units = $total_units</p>";
+
+
+    // 💡 Multiply per-unit rate × units
+    $tuition_total = $bill['amount'] * $total_units;
+    $total_billing += $tuition_total;
+
+    echo "<tr><td>Tuition Fee (" . number_format($bill['amount'], 2) . " × $total_units units)</td>
+              <td>" . number_format($tuition_total, 2) . "</td></tr>";
+} else {
+                        $total_billing += $bill['amount'];
+                        echo "<tr><td>" . htmlspecialchars($bill['fee_type']) . "</td>
+                                  <td>" . number_format($bill['amount'], 2) . "</td></tr>";
+                    }
                 }
                 echo "</table>";
                 echo "<p><strong>Total Billing:</strong> " . number_format($total_billing, 2) . "</p>";
@@ -167,7 +191,7 @@ if (isset($_POST['search'])) {
             echo "<h3>Payments</h3>";
             $total_payments = 0;
             if ($payment_result && mysqli_num_rows($payment_result) > 0) {
-                echo "<table><tr><th>Amount</th><th>Date</th></tr>";
+                echo "<table border='1'><tr><th>Amount</th><th>Date</th></tr>";
                 while ($pay = mysqli_fetch_assoc($payment_result)) {
                     $total_payments += $pay['amount'];
                     echo "<tr><td>" . number_format($pay['amount'], 2) . "</td><td>" . htmlspecialchars($pay['payment_date']) . "</td></tr>";
@@ -209,10 +233,16 @@ if (isset($_POST['make_payment']) && !empty($_POST['student_id'])) {
 
     $insert_payment = "INSERT INTO payments (student_id, school_year, semester, amount, payment_date) 
                        VALUES ($student_id, '$school_year', '$semester', $amount, NOW())";
+    
     if (mysqli_query($conn, $insert_payment)) {
-        echo "<p class='success'>Payment received successfully!</p>";
+        $payment_id = mysqli_insert_id($conn);
+        echo "<div>
+                <p class='success'>Payment recorded successfully!</p>
+                <a href='receipt.php?id=$payment_id' target='_blank'>🖨️ Print Official Receipt</a>
+                <p><a href='cashier_dashboard.php'>Clear Search/Start New</a></p>
+              </div>";
     } else {
-        echo "<p class='error'>Error recording payment.</p>";
+        echo "<p class='error'>Error recording payment: " . mysqli_error($conn) . "</p>";
     }
 }
 ?>
