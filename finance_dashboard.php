@@ -32,9 +32,10 @@ if (isset($_POST['fetch_records'])) {
         }
 
         // 2. Get Payments Made
-        $p_res = mysqli_query($conn, "SELECT SUM(amount_paid) AS paid FROM payments WHERE student_id = '$sid'");
+        $p_res = mysqli_query($conn, "SELECT SUM(amount) AS paid FROM payments WHERE student_id = '$sid'");
         $total_paid = mysqli_fetch_assoc($p_res)['paid'] ?? 0;
     }
+	
 }
 
 // FETCH EXACT AMOUNTS FROM YOUR NEW DATABASE TABLE
