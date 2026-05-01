@@ -2,16 +2,19 @@
 include 'db_connection.php';
 
 $db = new Database();
-$conn = $db->conn; // 🔥 FIX CONNECTION
+$conn = $db->getConnection(); // ✅ use getConnection()
 
-$id = $_GET['id'];
+// Safety check: make sure id is passed
+if (!isset($_GET['id'])) {
+    die("Application not found");
+}
 
-// (optional safety)
-$id = intval($id);
+$id = intval($_GET['id']); // sanitize input
 
-// reject application
+// Reject application
 mysqli_query($conn, "UPDATE applications SET status='rejected' WHERE app_id=$id");
 
+// Redirect back to admin
 header("Location: admin.php");
 exit();
 ?>

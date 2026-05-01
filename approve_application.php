@@ -2,7 +2,12 @@
 include 'db_connection.php';
 
 $db = new Database();
-$conn = $db->conn;
+$conn = $db->getConnection();
+
+// ✅ Safety check: make sure id is passed
+if (!isset($_GET['id'])) {
+    die("Application not found");
+}
 
 $id = intval($_GET['id']);
 
