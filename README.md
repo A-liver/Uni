@@ -30,4 +30,8 @@ This project is a web-based system that manages student accounts, roles, and app
 - HTML
   
 ## Author
-Ali Akbhar Jikiri
+Jason Balaba
+Ryveen Troy Gomez
+Ali Akbhar  Jikiri
+Josh Ian Pacalang
+Chareze Sagayno
