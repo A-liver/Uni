@@ -28,6 +28,8 @@ This project is a web-based system that manages student accounts, roles, and app
 - PHP
 - MySQL
 - HTML
+- CSS
+- JavaScript
   
 ## Author
 - Jason Balaba
